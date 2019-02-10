@@ -1,0 +1,8 @@
+remove shift = Shift_R
+remove mod1 = Meta_L
+remove mod1 = Shift_R
+remove mod1 = Alt_R
+remove mod1 = Alt_L
+keycode 101 = Shift_R NoSymbol Shift_R
+
+add shift = Shift_R

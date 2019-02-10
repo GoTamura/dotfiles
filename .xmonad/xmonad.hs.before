@@ -1,0 +1,84 @@
+import XMonad
+import Graphics.X11.ExtraTypes.XF86
+import System.IO
+import XMonad.Util.EZConfig(additionalKeys)
+import XMonad.Hooks.DynamicLog
+import XMonad.Hooks.EwmhDesktops
+import XMonad.Hooks.ManageDocks
+import XMonad.Hooks.ManageHelpers       -- isFullscreen, isFullFloat
+import XMonad.Layout.Maximize
+import XMonad.Layout.Minimize
+import XMonad.Layout.NoBorders          -- smartBorders, noBorders
+import XMonad.Util.EZConfig             -- removeKeys, additionalKeys
+import XMonad.Util.Run                  -- spawnPipe, hPutStrLn
+import XMonad.Util.WorkspaceCompare     -- getSortByXineramaRule
+
+main = do
+    myStatusBar <- spawnPipe "xmobar"
+    xmonad $ ewmh defaultConfig {
+          terminal        = "terminator"
+        , modMask         = myModMask
+        , handleEventHook = myHandleEventHook
+        , layoutHook      = myLayoutHook
+        , manageHook      = myManageHook
+        , logHook         = myLogHook myStatusBar
+        }
+        `removeKeys` myOverriddenKeys
+        `additionalKeys` myAdditionalKeys
+
+
+myModMask = mod4Mask
+myFont = "CamingoCode:size=8"
+
+myLayoutHook =   (smartBorders $ avoidStruts $ maximize $ minimize (tiled ||| Mirror tiled))
+             ||| (noBorders Full)
+    where
+        tiled   = Tall nmaster delta ratio
+        nmaster = 1
+        ratio   = 1/2
+        delta   = 3/100
+
+myHandleEventHook =   docksEventHook
+                  <+> fullscreenEventHook
+
+myManageHook =   manageDocks
+             <+> composeAll [
+                      isFullscreen                      --> doFullFloat
+                    , className =? "MPlayer"            --> doFloat
+                    , className =? "Gimp"               --> doFloat
+                    , className =? "Thunderbird"        --> doShift "9"
+                    , className =? "Pidgin"             --> doShift "9"
+                    ]
+
+myLogHook h = dynamicLogWithPP xmobarPP {
+                  ppSep    = " | "
+                , ppTitle  = xmobarColor "green" "" . shorten 80
+                , ppOutput = hPutStrLn h
+                , ppSort   = getSortByXineramaRule
+                }
+
+myAdditionalKeys = [
+    -- launch dmenu
+      ((myModMask,               xK_p     ), spawn ("dmenu_run -fn '" ++ myFont ++ "'"))
+
+    -- maximize
+    , ((myModMask,               xK_m     ), withFocused (sendMessage . maximizeRestore))
+
+    -- minimize and restore
+    , ((myModMask,               xK_n     ), withFocused minimizeWindow)
+    , ((myModMask .|. shiftMask, xK_n     ), sendMessage RestoreNextMinimizedWin)
+
+    -- toggle dock visibility
+    , ((myModMask,               xK_b     ), sendMessage ToggleStruts)
+
+    -- Custom commands
+    , ((myModMask,               xK_c     ), spawn "chromium --incognito")
+    , ((0,            0x1008ff11), spawn "amixer set -c 0 Master 2dB-")
+    , ((0,            0x1008ff13), spawn "amixer set -c 0 Master 2dB+")
+    , ((0,            0x1008ff12), spawn "amixer set Master toggle")
+    , ((0,            0x1008ffb2), spawn "amixer set Mic toggle")
+    ]
+
+myOverriddenKeys = [
+      (myModMask,               xK_p     )
+    ]
