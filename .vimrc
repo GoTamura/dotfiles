@@ -313,3 +313,12 @@ function! ToggleWindowSize()
   endif
 endfunction
 nnoremap <C-w><C-m> :call ToggleWindowSize()<CR>
+
+"--------------------------------------------------------
+" ColorSchemeの背景を透過させる
+" https://qiita.com/s_of_p/items/87a9d787ff5506edab8e
+autocmd VimEnter,ColorScheme * highlight Normal ctermbg=NONE
+autocmd VimEnter,ColorScheme * highlight NonText ctermbg=NONE
+autocmd VimEnter,ColorScheme * highlight TablineSel ctermbg=NONE
+autocmd VimEnter,ColorScheme * highlight LineNr ctermbg=NONE
+autocmd VimEnter,ColorScheme * highlight CursorLineNr ctermbg=NONE
