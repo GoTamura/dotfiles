@@ -1,14 +1,6 @@
 export path=($path ~/.cargo/bin)
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 export EDITOR="/usr/bin/vim"
-case $TERM in
-  linux)
-    LANG=C
-    ;;
-  *)
-    LANG=ja_JP.UTF-8
-    ;;
-esac
 export LANG
 
 #コマンド実行時の時間をプロンプトに表示する
@@ -119,3 +111,7 @@ bindkey '^Q' show_buffer_stack
 
 alias md2pdf='(){pandoc $1 -o $1{##*/%.*}.pdf -V documentclass=ltjarticle --pdf-engine=lualatex'
 
+# Vivado など Java系の表示を正しくする
+export _JAVA_AWT_WM_NONREPARENTING=1
+# Vivado のセットアップコマンド
+# sudo sh -c "export _JAVA_AWT_WM_NONREPARENTING=1 && ./xsetup"
