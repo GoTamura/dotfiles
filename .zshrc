@@ -1,4 +1,10 @@
-export path=($path ~/.cargo/bin)
+export EDITOR=nvim
+
+#KVS PATH
+export KVS_DIR=~/Documents/Kenkyu/KVS/build
+export path=($path $KVS_DIR/bin)
+export KVS_GLEW_DIR=$KVS_DIR/local
+export path=($path ~/.cargo/bin ~/.local/bin)
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 export EDITOR="/usr/bin/vim"
 export LANG
@@ -31,6 +37,8 @@ alias gl+="g++ -lglut -lGL -lGLU -lm -lglfw -lGLEW";
 alias gdb="gdb -q"
 alias pndjp="pandoc -V documentclass=ltjarticle --latex-engine=lualatex"
 alias vis="nvim -S ./Session.vim"
+alias open="xdg-open"
+alias nocaps="setxkbmap -option ctrl:nocaps"
 
 #
 #
@@ -115,3 +123,8 @@ alias md2pdf='(){pandoc $1 -o $1{##*/%.*}.pdf -V documentclass=ltjarticle --pdf-
 export _JAVA_AWT_WM_NONREPARENTING=1
 # Vivado のセットアップコマンド
 # sudo sh -c "export _JAVA_AWT_WM_NONREPARENTING=1 && ./xsetup"
+#
+# snippet
+#
+# エラーを出力しない (find で Permission deniedが表示されない)
+# 2>/dev/null

@@ -67,7 +67,7 @@ xmap <C-k>     <Plug>(neosnippet_expand_target)
 " \ neosnippet#expandable_or_jumpable() ?
 " \    "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 "smap <expr><TAB> neosnippet#expandable_or_jumpable() ?
-\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
+"\ "\<Plug>(neosnippet_expand_or_jump)" : "\<TAB>"
 
 " For conceal markers.
 if has('conceal')
@@ -238,15 +238,11 @@ let g:rustfmt_autosave = 1
 #endfunction
 #'''
 
-#[[plugins]]
+[[plugins]]
 repo = 'majutsushi/tagbar'
 hook_add = '''
 nmap <F8> :TagbarToggle<CR>
 '''
-
-[[plugins]]
-repo = 'rust-lang-nursery/rustfmt'
-on_ft = 'rust'
 
 [[plugins]]
 repo = 'autozimu/LanguageClient-neovim'
@@ -266,7 +262,6 @@ let g:LanguageClient_serverCommands = {
 let g:LanguageClient_autoStart = 1
 let g:LanguageClient_loggingFile = expand('~/.vim/LanguageClient.log')
 let g:LanguageClient_settingsPath = expand('~/.vim/settings.json')
-let g:LanguageClient_completionPreferTextEdit = 1
 let g:LanguageClient_rootMarkers = {
     \ 'javascript': ['project.json'],
     \ 'rust': ['Cargo.toml'],
@@ -428,3 +423,6 @@ repo = 'tikhomirov/vim-glsl'
 hook_add = '''
 autocmd! BufNewFile,BufRead *.vs,*.fs set ft=glsl
 '''
+
+[[plugins]]
+repo = 'qpkorr/vim-bufkill'
