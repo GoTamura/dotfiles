@@ -24,6 +24,8 @@ import XMonad.Layout.ThreeColumns
 import XMonad.Layout.Maximize
 import XMonad.Layout.Minimize
 import XMonad.Layout.SimplestFloat
+import XMonad.Layout.LayoutScreens
+import XMonad.Layout.TwoPane
 import XMonad.Layout.PerWorkspace
 import qualified XMonad.StackSet as W
 import XMonad.Hooks.RestoreMinimized
@@ -58,7 +60,7 @@ main = do
 -------------------------------------------------
 -------------------------------------------------
 myModMask             = mod4Mask
-myTerminal            = "alacritty"
+myTerminal            = "alacritty -e byobu new"
 myNormalBorderColor   = "#b8bb26"
 myFocusedBorderColor  = "#fb4934"
 myFont                = "MigMix 1M:size=9:antialias=true"
@@ -114,13 +116,21 @@ colorGreen     = "#b8bb26"
 
 
 myAdditionalKeys =  [
-   ("<XF86AudioLowerVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ -2% && pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \\([0-9][0-9]*\\)%.*,\\1,' | xargs -0 volnoti-show")
+  ("<XF86AudioMute>", spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle; if pactl list sinks | grep '^[[:space:]]Mute:' | grep -Fq \"yes\"; then volnoti-show -m; else pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \\([0-9][0-9]*\\)%.*,\\1,' | xargs -0 volnoti-show; fi")
+  ,("<XF86AudioLowerVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ -2% && pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \\([0-9][0-9]*\\)%.*,\\1,' | xargs -0 volnoti-show")
   ,("<XF86AudioRaiseVolume>", spawn "pactl set-sink-volume @DEFAULT_SINK@ +2% && pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \\([0-9][0-9]*\\)%.*,\\1,' | xargs -0 volnoti-show")
+  , ("<XF86AudioPrev>", spawn "playerctl --player=spotify previous")
+  , ("<XF86AudioPlay>", spawn "playerctl --player=spotify play-pause")
+  , ("<XF86AudioNext>", spawn "playerctl --player=spotify next")
 
-  ,("<XF86AudioMute>", spawn "pactl set-sink-mute @DEFAULT_SINK@ toggle; if pactl list sinks | grep '^[[:space:]]Mute:' | grep -Fq \"yes\"; then volnoti-show -m; else pactl list sinks | grep '^[[:space:]]Volume:' | head -n $(( $SINK + 1 )) | tail -n 1 | sed -e 's,.* \\([0-9][0-9]*\\)%.*,\\1,' | xargs -0 volnoti-show; fi")
+  , ("<XF86Search>", selectSearchBrowser "/usr/bin/google-chrome-stable" google)
+
+  , ("<XF86MonBrightnessDown>", spawn "light -U 4")
+  , ("<XF86MonBrightnessUp>", spawn "light -A 4")
+  , ("<Print>", spawn "xfce4-screenshooter")
+
   ,("<XF86AudioMicMute>", spawn "amixer set Capture toggle")
-  ,("<XF86MonBrightnessUp>", spawn "light -A 4")
-  ,("<XF86MonBrightnessDown>", spawn "light -U 4")
+
   ,("M-m", withFocused (sendMessage . maximizeRestore))
   ,("M-n", withFocused minimizeWindow)
   ,("M-S-n", withLastMinimized maximizeWindowAndFocus)
@@ -128,22 +138,26 @@ myAdditionalKeys =  [
   ,("M-S-z", spawn "xfce4-appfinder")
   ,("M-C-q", spawn "light-locker-command -l")
   ,("M-<F1>", spawn "zsh .touchpad_toggle.sh")
-  ,("M-r", floatNext True >> (spawn ("xterm -e \"zsh -c \'source .xterm_transset.sh; ranger\'\"")))
+  --,("M-r", floatNext True >> (spawn ("xterm -e \"zsh -c \'source .xterm_transset.sh; ranger\'\"")))
 
   , ("M-S-p", spawn "pavucontrol")
-  , ("M-f", runOrRaiseNext "firefox" (className =? "Firefox"))
+  -- , ("M-f", runOrRaiseNext "firefox" (className =? "Firefox"))
 
   , ("M-a", runOrRaiseNext "google-chrome-stable" (className =? "Google-chrome"))
   , ("M-S-a", namedScratchpadAction myScratchpads "chrome")
 
+  , ("M-s", runOrRaiseNext "slack" (className =? "Slack"))
+  , ("M-S-s", runOrRaiseNext "spotify" (className =? "Spotify"))
+
   , ("M-<F4>",     namedScratchpadAction myScratchpads "htop")
-  , ("M-<XF86AudioPlay>",     namedScratchpadAction myScratchpads "spotify")
-  , ("M-S-g", selectSearchBrowser "/usr/bin/google-chrome-stable" google)
+  , ("M-f", runOrRaiseNext "alacritty -t nvim -e byobu new -A -s nvim" (className =? "Alacritty" <&&> title =? "nvim"))
+  , ("M-S-f",     namedScratchpadAction myScratchpads "nvim")
+  , ("M-g", selectSearchBrowser "/usr/bin/google-chrome-stable" google)
   , ("M-<Tab>", goToSelected defaultGSConfig)
-  , ("<XF86AudioPlay>", spawn "playerctl play-pause")
-  , ("<XF86AudioNext>", spawn "playerctl next")
-  , ("<XF86AudioPrev>", spawn "playerctl previous")
-  , ("<Print>", spawn "xfce4-screenshooter")
+
+  -- , ("M-S-<Space>", layoutScreens 2 (TwoPane 0.5 0.5))
+  --, ("M-S-<Space>", layoutScreens 3 $ fixedLayout [Rectangle 0 0 1920 (1080), Rectangle 1920 0 1224 1080, Rectangle (1920 + 1224) 0 (1920 - 1224) 1080])
+  -- , ("M-S-C-<Space>", rescreen)
   
   -- className は xprop で調べる
   ]
@@ -166,14 +180,15 @@ myStartupHook = do
     spawnOnce "light-locker"
     spawnOnce "compton --config $HOME/.config/compton/compton.conf -b"
 --  spawnOnce "xmobar &"
-    spawnOnce "feh --bg-scale $HOME/Pictures/wallPaper/pink.png"
+    spawnOnce "feh --bg-scale $HOME/Pictures/wallPaper/gam0022.jpg"
     spawnOnce "setxkbmap -option ctrl:nocaps"
 --  spawnOnce "xinput set-prop 11 \"Device Enabled\" 0"
+    spawnOnce "xinput map-to-output 12 eDP-1"
     spawnOnce "fcitx-autostart"
     spawnOnce "volnoti"
     spawn "start-pulseaudio-x11"
     spawnOnce "thunar --daemon"
-    spawnOnce "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --widthtype pixel --width 190  --transparent true --alpha 40 --tint 0x121212 --heighttype pixel --height 36"
+    spawnOnce "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --widthtype pixel --width 190  --transparent true --alpha 0 --tint 0x282828 --heighttype pixel --height 36"
 --  spawnOnce "nm-applet"
 --  spawnOn "3:mikutter" "mikutter"
     spawnOn "4" "thunderbird"
@@ -183,10 +198,9 @@ myStartupHook = do
 
 myScratchpads :: NamedScratchpads
 myScratchpads = [
-    NS "alacritty" "alacritty" (appName =? "Alacritty") nonFloating
+    NS "alacritty" "alacritty -e byobu new -A -s alacritty" (appName =? "Alacritty") nonFloating
   , NS "htop" "alacritty -t htop -e htop" (title =? "htop") nonFloating
-  , NS "nvim" "alacritty -t nvim -e nvim" (title =? "nvim") nonFloating
+  , NS "nvim" "alacritty -t nvim -e byobu new -A -s nvim" (title =? "nvim") nonFloating
   , NS "chrome" "google-chrome-stable" (className =? "Google-chrome") nonFloating
-  , NS "spotify" "spotify" (className =? "spotify") nonFloating
 
   ]

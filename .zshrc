@@ -1,8 +1,10 @@
 export EDITOR=nvim
 
 #KVS PATH
-export KVS_DIR=~/Documents/Kenkyu/KVS/build
-export path=($path $KVS_DIR/bin)
+#export KVS_DIR=~/Documents/Kenkyu/KVS/build
+export KVS_DIR=~/Documents/job/4DStreetViewMovieGenerator/local/4dsv/kvs
+export KVS_OSMESA_DIR=~/Documents/job/4DStreetViewMovieGenerator/local/4dsv/kvs.osmesa
+export path=($path $KVS_DIR/bin $KVS_OSMESA_DIR)
 export KVS_GLEW_DIR=$KVS_DIR/local
 export path=($path ~/.cargo/bin ~/.local/bin)
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
@@ -26,9 +28,10 @@ alias ls="ls -F --color=auto"
 alias ipa="ip a"
 alias mkdir="mkdir -p"
 alias v="nvim"
-alias vz="vim ~/.zshrc"
-alias vv="vim ~/.vimrc"
-alias vd="vim ~/.vim/dein.toml"
+alias vz="nvim ~/.zshrc"
+alias vv="nvim ~/.vimrc"
+alias vd="nvim ~/.vim/dein.toml"
+alias vdl="nvim ~/.vim/dein_lazy.toml"
 alias sz="source ~/.zshrc"
 alias em="emacs -nw"
 alias fehbg="feh --bg-scale"
@@ -39,6 +42,9 @@ alias pndjp="pandoc -V documentclass=ltjarticle --latex-engine=lualatex"
 alias vis="nvim -S ./Session.vim"
 alias open="xdg-open"
 alias nocaps="setxkbmap -option ctrl:nocaps"
+alias dirs="dirs -v"
+alias nvf="nvr --remote-send \"<C-\\><C-n>:vs $1<CR>\""
+function nvcd () { realpath $1 | xargs -I{} nvr -c "cd {} "}
 
 #
 #

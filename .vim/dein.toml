@@ -10,7 +10,13 @@ set background=dark
 '''
 
 #-----------------------------------------------------------
+[[plugins]]
+repo = "airblade/vim-gitgutter"
 
+[[plugins]]
+repo = "tpope/vim-fugitive"
+
+#-----------------------------------------------------------
 [[plugins]]
 repo = 'Shougo/vimproc.vim'
 build = 'make'
@@ -21,7 +27,6 @@ repo = 'Shougo/context_filetype.vim'
 [[plugins]]
 repo = 'Shougo/deoplete.nvim'
 depends = 'context_filetype.vim'
-on_event = 'InsertEnter'
 hook_add = '''
 let g:deoplete#enable_at_startup = 1
 let g:deoplete#auto_completion_start_length = 1
@@ -47,6 +52,9 @@ call deoplete#custom#option({
 \ })
 
 '''
+
+#[[plugins]]
+#repo = 'deoplete-plugins/deoplete-tag'
 
 [[plugins]]
 repo = 'Shougo/neosnippet.vim'
@@ -184,24 +192,6 @@ function! s:toggle_defx()
 endfunction 
 '''
 
-#-----------------------------------------------------------
-
-##markdown
-#[[plugins]]
-#repo = 'plasticboy/vim-markdown'
-#on_ft = 'md'
-#
-#[[plugins]]
-#repo = 'kannokanno/previm'
-#on_ft = 'md'
-#
-#[[plugins]]
-#repo = 'tyru/open-browser.vim'
-#on_ft = 'md'
-#
-#[[plugins]]
-#repo = 'miyakogi/livemark.vim'
-#on_ft = 'md'
 
 #-----------------------------------------------------------
 #http://adragoona.hatenablog.com/entry/2015/07/21/164138
@@ -209,14 +199,6 @@ endfunction
 [[plugins]]
 repo = 'mopp/next-alter.vim'
 
-#------------------------------------------------------------
-# Rust
-[[plugins]]
-repo = 'rust-lang/rust.vim'
-on_ft = 'rust'
-hook_add = '''
-let g:rustfmt_autosave = 1
-'''
 
 #[[plugins]]
 #repo = 'scrooloose/syntastic'
@@ -242,77 +224,42 @@ let g:rustfmt_autosave = 1
 repo = 'majutsushi/tagbar'
 hook_add = '''
 nmap <F8> :TagbarToggle<CR>
+let g:rust_use_custom_ctags_defs = 1  " if using rust.vim
+let g:tagbar_type_rust = {
+  \ 'ctagsbin' : '/usr/bin/ctags',
+  \ 'ctagstype' : 'rust',
+  \ 'kinds' : [
+      \ 'n:modules',
+      \ 's:structures:1',
+      \ 'i:interfaces',
+      \ 'c:implementations',
+      \ 'f:functions:1',
+      \ 'g:enumerations:1',
+      \ 't:type aliases:1:0',
+      \ 'v:constants:1:0',
+      \ 'M:macros:1',
+      \ 'm:fields:1:0',
+      \ 'e:enum variants:1:0',
+      \ 'P:methods:1',
+  \ ],
+  \ 'sro': '::',
+  \ 'kind2scope' : {
+      \ 'n': 'module',
+      \ 's': 'struct',
+      \ 'i': 'interface',
+      \ 'c': 'implementation',
+      \ 'f': 'function',
+      \ 'g': 'enum',
+      \ 't': 'typedef',
+      \ 'v': 'variable',
+      \ 'M': 'macro',
+      \ 'm': 'field',
+      \ 'e': 'enumerator',
+      \ 'P': 'method',
+  \ },
+\ }
 '''
 
-[[plugins]]
-repo = 'autozimu/LanguageClient-neovim'
-depends = 'deoplete.nvim'
-on_ft = ['rust', 'vue', 'python', 'cpp']
-build = './install.sh'
-hook_add = '''
-set hidden
-set signcolumn=yes
-let g:LanguageClient_serverCommands = {
-    \ 'vue': ['vls'],
-    \ 'rust': ['rustup', 'run', 'nightly', 'rls'],
-    \ 'python': ['pyls'],
-    \ 'cpp': ['clangd'],
-    \ 'haskell': ['hie-wrapper'],
-    \ }
-let g:LanguageClient_autoStart = 1
-let g:LanguageClient_loggingFile = expand('~/.vim/LanguageClient.log')
-let g:LanguageClient_settingsPath = expand('~/.vim/settings.json')
-let g:LanguageClient_rootMarkers = {
-    \ 'javascript': ['project.json'],
-    \ 'rust': ['Cargo.toml'],
-    \ 'haskell': ['*.cabal', 'stack.yaml'],
-    \ }
-let g:LanguageClient_diagnosticsEnable=1
-let g:LanguageClient_diagnosticsList="Quickfix"
-function LC_maps()
-  if has_key(g:LanguageClient_serverCommands, &filetype)
-    nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<CR>
-    nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<CR>
-    nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-  endif
-endfunction
-
-autocmd FileType * call LC_maps()
-let g:LanguageClient_diagnosticsDisplay = {
-     \        1: {
-     \            "name": "Error",
-     \            "texthl": "ALEError",
-     \            "signText": "✗",
-     \            "signTexthl": "ALEErrorSign",
-     \            "virtualTexthl": "Error",
-     \        },
-     \        2: {
-     \            "name": "Warning",
-     \            "texthl": "ALEWarning",
-     \            "signText": "！",
-     \            "signTexthl": "ALEWarningSign",
-     \            "virtualTexthl": "Todo",
-     \        },
-     \        3: {
-     \            "name": "Information",
-     \            "texthl": "ALEInfo",
-     \            "signText": "ｉ",
-     \            "signTexthl": "ALEInfoSign",
-     \            "virtualTexthl": "Todo",
-     \        },
-     \        4: {
-     \            "name": "Hint",
-     \            "texthl": "ALEInfo",
-     \            "signText": "＞",
-     \            "signTexthl": "ALEInfoSign",
-     \            "virtualTexthl": "Todo",
-     \        },
-     \     }
-'''
-hook_source = '''
-set completefunc=LanguageClient#complete
-set formatexpr=LanguageClient#textDocument_rangeFormatting_sync()
-'''
 
 ## LSP非対応言語はこっちのLinterをつかう
 #[[plugins]]

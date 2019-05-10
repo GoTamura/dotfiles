@@ -80,6 +80,8 @@ set showmatch
 set wildmenu
 set formatoptions+=mM
 set hidden
+set mouse=a
+autocmd VimResized * wincmd =
 
 "-----------------------------------------------------------
 
@@ -247,6 +249,26 @@ endfunction
 autocmd FileType tidal map <F5> :TidalRun<CR>
 augroup END
 
+" Rust
+augroup Rust
+autocmd FileType rust map <F5> :Cargo run<CR>
+augroup END
+
+" TypeScript
+augroup TypeScript
+autocmd BufRead,BufNewFile *.ts set filetype=typescript
+autocmd FileType typescript command! TypeScriptRun call s:TypeScriptRun()
+function! s:TypeScriptRun()
+  !npx ts-node ./src/index.ts
+endfunction
+autocmd FileType typescript map <F5> :TypeScriptRun<CR>
+augroup END
+
+" Vue.js
+augroup Vue
+autocmd BufRead,BufNewFile *.vue set filetype=vue
+augroup END
+
 " Undo
 if has('persistent_undo')
   set undodir=~/.vim/undo
@@ -312,7 +334,7 @@ function! ToggleWindowSize()
     let s:toggle_window_size = 1
   endif
 endfunction
-nnoremap <C-w><C-m> :call ToggleWindowSize()<CR>
+nnoremap <F12> :call ToggleWindowSize()<CR>
 
 "--------------------------------------------------------
 " ColorSchemeの背景を透過させる
@@ -391,4 +413,5 @@ function! MonkeyTerminalExec(cmd)
 endfunction
 
 " With this maps you can now toggle the terminal
-nnoremap <Leader>t :call MonkeyTerminalToggle()<cr>
+nnoremap <silent> <Leader>t :call MonkeyTerminalToggle()<cr>
+tnoremap <C-j> <C-\><C-n>

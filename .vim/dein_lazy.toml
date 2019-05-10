@@ -1,1 +1,120 @@
+#-----------------------------------------------------------
 
+##markdown
+#[[plugins]]
+#repo = 'plasticboy/vim-markdown'
+#on_ft = 'md'
+#
+#[[plugins]]
+#repo = 'kannokanno/previm'
+#on_ft = 'md'
+#
+#[[plugins]]
+#repo = 'tyru/open-browser.vim'
+#on_ft = 'md'
+#
+#[[plugins]]
+#repo = 'miyakogi/livemark.vim'
+#on_ft = 'md'
+
+#------------------------------------------------------------
+# CSS HTML
+[[plugins]]
+repo = 'hail2u/vim-css3-syntax'
+on_ft = 'css'
+
+#[[plugins]]
+#repo = 'mattn/emmet-vim'
+#on_ft = '[html, vue]'
+
+#------------------------------------------------------------
+# Vue
+[[plugins]]
+repo = 'posva/vim-vue'
+on_ft = 'vue'
+
+#------------------------------------------------------------
+# Rust
+[[plugins]]
+repo = 'rust-lang/rust.vim'
+on_ft = 'rust'
+hook_source = '''
+let g:rustfmt_autosave = 1
+'''
+
+#------------------------------------------------------------
+# TypeScript
+[[plugins]]
+repo = 'leafgarland/typescript-vim'
+on_ft = 'typescript'
+hook_source = '''
+'''
+
+[[plugins]]
+repo = 'autozimu/LanguageClient-neovim'
+depends = 'deoplete.nvim'
+on_ft = ['rust', 'vue', 'python', 'cpp', 'javascript', 'typescript']
+build = './install.sh'
+hook_source = '''
+set hidden
+set signcolumn=yes
+let s:rust_channel = substitute(system("if rustup show | grep -A 10 active | grep stable >/dev/null ; then echo \"stable\"; else echo \"nightly\"; fi"), '\n\+$', '', '')
+let g:LanguageClient_serverCommands = {
+    \ 'vue': ['vls'],
+    \ 'rust': ['rustup', 'run', s:rust_channel, 'rls'],
+    \ 'python': ['pyls'],
+    \ 'cpp': ['clangd'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'typescript': ['javascript-typescript-stdio'],
+    \ 'haskell': ['hie-wrapper'],
+    \ }
+let g:LanguageClient_autoStart = 1
+let g:LanguageClient_loggingFile = expand('~/.vim/LanguageClient.log')
+let g:LanguageClient_settingsPath = expand('~/.vim/settings.json')
+let g:LanguageClient_rootMarkers = {
+    \ 'javascript': ['project.json'],
+    \ 'rust': ['Cargo.toml'],
+    \ 'haskell': ['*.cabal', 'stack.yaml'],
+    \ }
+function LC_maps()
+  if has_key(g:LanguageClient_serverCommands, &filetype)
+    nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<CR>
+    nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<CR>
+    nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+  endif
+endfunction
+
+autocmd FileType * call LC_maps()
+let g:LanguageClient_diagnosticsDisplay = {
+     \        1: {
+     \            "name": "Error",
+     \            "texthl": "ALEError",
+     \            "signText": "✗",
+     \            "signTexthl": "ALEErrorSign",
+     \            "virtualTexthl": "Error",
+     \        },
+     \        2: {
+     \            "name": "Warning",
+     \            "texthl": "ALEWarning",
+     \            "signText": "！",
+     \            "signTexthl": "ALEWarningSign",
+     \            "virtualTexthl": "Todo",
+     \        },
+     \        3: {
+     \            "name": "Information",
+     \            "texthl": "ALEInfo",
+     \            "signText": "ｉ",
+     \            "signTexthl": "ALEInfoSign",
+     \            "virtualTexthl": "Todo",
+     \        },
+     \        4: {
+     \            "name": "Hint",
+     \            "texthl": "ALEInfo",
+     \            "signText": "＞",
+     \            "signTexthl": "ALEInfoSign",
+     \            "virtualTexthl": "Todo",
+     \        },
+     \     }
+set completefunc=LanguageClient#complete
+set formatexpr=LanguageClient#textDocument_rangeFormatting_sync()
+'''
