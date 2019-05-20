@@ -1,10 +1,8 @@
 export EDITOR=nvim
 
 #KVS PATH
-#export KVS_DIR=~/Documents/Kenkyu/KVS/build
-export KVS_DIR=~/Documents/job/4DStreetViewMovieGenerator/local/4dsv/kvs
-export KVS_OSMESA_DIR=~/Documents/job/4DStreetViewMovieGenerator/local/4dsv/kvs.osmesa
-export path=($path $KVS_DIR/bin $KVS_OSMESA_DIR)
+export KVS_DIR=~/local/kvs_osmesa
+export path=($path $KVS_DIR/bin )
 export KVS_GLEW_DIR=$KVS_DIR/local
 export path=($path ~/.cargo/bin ~/.local/bin)
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"

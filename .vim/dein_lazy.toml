@@ -53,7 +53,7 @@ hook_source = '''
 [[plugins]]
 repo = 'autozimu/LanguageClient-neovim'
 depends = 'deoplete.nvim'
-on_ft = ['rust', 'vue', 'python', 'cpp', 'javascript', 'typescript']
+on_ft = ['rust', 'vue', 'python', 'cpp', 'javascript', 'typescript', 'fortran']
 build = './install.sh'
 hook_source = '''
 set hidden
@@ -67,6 +67,7 @@ let g:LanguageClient_serverCommands = {
     \ 'javascript': ['javascript-typescript-stdio'],
     \ 'typescript': ['javascript-typescript-stdio'],
     \ 'haskell': ['hie-wrapper'],
+    \ 'fortran': ['fortls'],
     \ }
 let g:LanguageClient_autoStart = 1
 let g:LanguageClient_loggingFile = expand('~/.vim/LanguageClient.log')
@@ -118,3 +119,13 @@ let g:LanguageClient_diagnosticsDisplay = {
 set completefunc=LanguageClient#complete
 set formatexpr=LanguageClient#textDocument_rangeFormatting_sync()
 '''
+
+### LSP非対応言語はこっちのLinterをつかう
+#[[plugins]]
+#repo = 'w0rp/ale'
+#on_ft = 'fortran'
+#hook_source = '''
+#let g:ale_lint_on_text_changed = 'never'
+#let g:ale_lint_on_insert_leave = 1
+#let g:ale_sign_column_always = 1
+#'''

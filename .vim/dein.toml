@@ -261,20 +261,6 @@ let g:tagbar_type_rust = {
 '''
 
 
-## LSP非対応言語はこっちのLinterをつかう
-#[[plugins]]
-#repo = 'w0rp/ale'
-#hook_source = '''
-#let g:ale_lint_on_text_changed = 'never'
-#let g:ale_lint_on_insert_leave = 1
-#let g:ale_sign_column_always = 1
-#highlight ALEError ctermbg=52
-#highlight ALEWarning ctermbg=52
-#"highlight ALEInfo ctermbg=52
-#"highlight ALEStyleError ctermbg=52
-#"highlight ALEStyleWarning ctermbg=52
-#'''
-
 #[[plugins]]
 #repo = 'rhysd/rust-doc.vim'
 
