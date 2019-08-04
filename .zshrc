@@ -1,10 +1,12 @@
 export EDITOR=nvim
 
 #KVS PATH
-export KVS_DIR=~/local/kvs_osmesa
+export KVS_DIR=~/local/kvs_osmesa_gentoo_debug
+#export KVS_DIR=~/local/kvs_glut
+export KVS_OSMESA_GALLIUM_DRIVER=llvmpipe
+#export KVS_OSMESA_DIR=~/gentoo/usr/include
 export path=($path $KVS_DIR/bin )
-export KVS_GLEW_DIR=$KVS_DIR/local
-export path=($path ~/.cargo/bin ~/.local/bin)
+export path=($path ~/.cargo/bin ~/.local/bin ~/.yarn/bin)
 export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
 export EDITOR="/usr/bin/vim"
 export LANG
@@ -43,6 +45,8 @@ alias nocaps="setxkbmap -option ctrl:nocaps"
 alias dirs="dirs -v"
 alias nvf="nvr --remote-send \"<C-\\><C-n>:vs $1<CR>\""
 function nvcd () { realpath $1 | xargs -I{} nvr -c "cd {} "}
+
+alias glog="git log --graph --oneline --all --decorate=full -20 --date=short --format=\"%C(yellow)%h%C(reset) %C(magenta)[%ad]%C(reset)%C(auto)%d%C(reset) %s %C(cyan)@%an%C(reset)\" "
 
 #
 #
@@ -107,10 +111,36 @@ autoload -Uz vcs_info
 setopt prompt_subst
 zstyle ':vcs_info:*' formats '[%F{green}%b%f]'
 zstyle ':vcs_info:*' actionformats '[%F{green}%b%f(%F{red}%a%f)]'
-precmd() { vcs_info }
-PROMPT='[%n@%m]${vcs_info_msg_0_} %{${fg[yellow]}%}%~%{${reset_color}%} [%*]
+
+function is_gentoo() { 
+  if echo $SHELL | grep gentoo >/dev/null ; then
+    shellroot="${fg[yellow]}gentoo${reset_color}";
+  else 
+    shellroot="arch"; 
+  fi
+}
+
+precmd() { 
+  vcs_info;
+  is_gentoo;
+}
+
+function memo() {
+  if [ $# -eq 0 ]; then
+    unset memotxt
+    return
+  fi
+  local str
+  for str in ${1+"$@"}
+  do
+    memotxt="${memotxt} ${str}"
+  done
+}
+
+
+PROMPT='[%n@%m:${shellroot}]${vcs_info_msg_0_} %{${fg[yellow]}%}%~%{${reset_color}%} [%*]
 %(?.%B%F{green}.%B%F{blue})%\>%f%b'
-RPROMPT=''
+RPROMPT='${memotxt}'
 
 show_buffer_stack() {
   POSTDISPLAY="

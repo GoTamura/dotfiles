@@ -5,6 +5,7 @@
 " :vim {pattern} `git ls-files` // git で管理されてる範囲内でgrep
 " <Space> E // defxウィンドウをトグる
 "
+command -nargs=1 Lvimg lvim <f-args> `git ls-files`
 let mapleader = "\<Space>"
 nnoremap <Space> <Nop>
 "--------------------------------------------------------
@@ -71,7 +72,9 @@ set shiftwidth=2
 set hlsearch
 set autoindent
 set laststatus=2
-set t_Co=256
+set termguicolors
+"let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+"let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
 set shortmess+=I
 set ignorecase
 set smartcase
@@ -81,6 +84,7 @@ set wildmenu
 set formatoptions+=mM
 set hidden
 set mouse=a
+set clipboard+=unnamedplus
 autocmd VimResized * wincmd =
 
 "-----------------------------------------------------------
@@ -141,15 +145,6 @@ function! s:insert_include_guard()
 endfunction
 command! -nargs=0 InsertIncludeGuard call s:insert_include_guard()
 
-"-----------------------------------------------------------------
-"http://adragoona.hatenablog.com/entry/2015/07/21/164138
-" next-alter
-"---------------------------------------------------------
-"Prefix
-nmap <Leader>ano <Plug>(next-alter-open)
-nnoremap <expr> <Leader>anb next_alter#open_mapexpr('vertical botright')
-nnoremap <expr> <Leader>ant next_alter#open_mapexpr('vertical topleft')
-
 " key is file extension, value is alternate file extension.
 let g:next_alter#pair_extension = { 
             \ 'c'   : [ 'h' ],
@@ -180,7 +175,7 @@ let g:termdebug_wide = 163
 
 "------------------------------------------------------------
 " quickfix
-au QuickFixCmdPost *grep* cwindow
+"au QuickFixCmdPost *grep* cwindow
 "------------------------------------------------------------
 " vimgrep
 "vim {pattern} `git ls-files`
@@ -334,7 +329,7 @@ function! ToggleWindowSize()
     let s:toggle_window_size = 1
   endif
 endfunction
-nnoremap <F12> :call ToggleWindowSize()<CR>
+nnoremap <F11> :call ToggleWindowSize()<CR>
 
 "--------------------------------------------------------
 " ColorSchemeの背景を透過させる

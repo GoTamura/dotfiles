@@ -89,6 +89,9 @@ myManageHook = composeAll
   ,floatNextHook
   ,isFullscreen -->doFullFloat
   ,className =? "Gimp" --> doFloat
+  ,className =? "copyq" --> doFloat
+  ,className =? "Thunar" --> doFloat
+  ,className =? "File-roller" --> doFloat
   ]
 
 myLogHook h = dynamicLogWithPP xmobarPP {
@@ -149,6 +152,8 @@ myAdditionalKeys =  [
   , ("M-s", runOrRaiseNext "slack" (className =? "Slack"))
   , ("M-S-s", runOrRaiseNext "spotify" (className =? "Spotify"))
 
+  , ("M-d", namedScratchpadAction myScratchpads "thunar")
+
   , ("M-<F4>",     namedScratchpadAction myScratchpads "htop")
   , ("M-f", runOrRaiseNext "alacritty -t nvim -e byobu new -A -s nvim" (className =? "Alacritty" <&&> title =? "nvim"))
   , ("M-S-f",     namedScratchpadAction myScratchpads "nvim")
@@ -189,6 +194,7 @@ myStartupHook = do
     spawn "start-pulseaudio-x11"
     spawnOnce "thunar --daemon"
     spawnOnce "trayer --edge top --align right --SetDockType true --SetPartialStrut true --expand true --widthtype pixel --width 190  --transparent true --alpha 0 --tint 0x282828 --heighttype pixel --height 36"
+    spawnOnce "copyq"
 --  spawnOnce "nm-applet"
 --  spawnOn "3:mikutter" "mikutter"
     spawnOn "4" "thunderbird"
@@ -202,5 +208,6 @@ myScratchpads = [
   , NS "htop" "alacritty -t htop -e htop" (title =? "htop") nonFloating
   , NS "nvim" "alacritty -t nvim -e byobu new -A -s nvim" (title =? "nvim") nonFloating
   , NS "chrome" "google-chrome-stable" (className =? "Google-chrome") nonFloating
+  , NS "thunar" "thunar" (className =? "thunar") defaultFloating
 
   ]

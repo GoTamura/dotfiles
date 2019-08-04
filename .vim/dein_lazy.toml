@@ -28,10 +28,16 @@ on_ft = 'css'
 #on_ft = '[html, vue]'
 
 #------------------------------------------------------------
+# Cpp
+
+#------------------------------------------------------------
 # Vue
 [[plugins]]
 repo = 'posva/vim-vue'
 on_ft = 'vue'
+[[plugins]]
+repo = 'prettier/vim-prettier'
+on_ft = '[vue, javascript, typescript, css, yaml]'
 
 #------------------------------------------------------------
 # Rust
@@ -41,6 +47,11 @@ on_ft = 'rust'
 hook_source = '''
 let g:rustfmt_autosave = 1
 '''
+
+[[plugins]]
+repo = 'tbodt/deoplete-tabnine'
+on_ft = ['rust']
+build = './install.sh'
 
 #------------------------------------------------------------
 # TypeScript
@@ -53,7 +64,7 @@ hook_source = '''
 [[plugins]]
 repo = 'autozimu/LanguageClient-neovim'
 depends = 'deoplete.nvim'
-on_ft = ['rust', 'vue', 'python', 'cpp', 'javascript', 'typescript', 'fortran']
+on_ft = ['rust', 'vue', 'python', 'cpp', 'javascript', 'typescript', 'fortran', 'haskell']
 build = './install.sh'
 hook_source = '''
 set hidden
@@ -82,6 +93,10 @@ function LC_maps()
     nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<CR>
     nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<CR>
     nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+    nnoremap <buffer> <silent> <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+    nnoremap <buffer> <silent> <Leader>lb :call LanguageClient#textDocument_references()<CR>
+    nnoremap <buffer> <silent> <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+    nnoremap <buffer> <silent> <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
   endif
 endfunction
 
