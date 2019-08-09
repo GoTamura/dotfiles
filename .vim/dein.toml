@@ -103,12 +103,9 @@ repo = 'honza/vim-snippets'
 repo = 'vim-airline/vim-airline'
 hook_add = '''
 let g:airline_powerline_fonts = 1
-'''
-
-hook_source = '''
-let g:airline#extensions#tabline#left_sep = ' '
-let g:airline#extensions#tabline#left_alt_sep = '|'
-let g:airline#extensions#tabline#formatter = 'unique_tail'
+"let g:airline#extensions#tabline#left_sep = ' '
+"let g:airline#extensions#tabline#left_alt_sep = '|'
+let g:airline#extensions#tabline#formatter = 'unique_tail_improved'
 '''
 [[plugins]]
 repo =  'vim-airline/vim-airline-themes'
@@ -237,7 +234,7 @@ autocmd FileType defx call s:defx_my_settings()
       nnoremap <silent><buffer><expr> p
      \ defx#do_action('paste')
       nnoremap <silent><buffer><expr> l
-     \ defx#do_action('open')
+     \ defx#do_action('open_or_close_tree')
       nnoremap <silent><buffer><expr> E
      \ defx#do_action('open', 'vsplit')
       nnoremap <silent><buffer><expr> P
@@ -281,12 +278,12 @@ autocmd FileType defx call s:defx_my_settings()
 
 nnoremap <silent><Space>e :call <SID>toggle_defx()<Cr>
 function! s:toggle_defx()
-  Defx -split=vertical -winwidth=40 -direction=topleft -toggle
+  Defx -columns=mark:indent:icons:indent:filename:type:size:time -split=floating -winwidth=80 -toggle -resume
 endfunction 
 '''
 [[plugins]]
 repo = "kristijanhusak/defx-icons"
-hook_source = '''
+hook_add = '''
 let g:defx_icons_enable_syntax_highlight = 1
 let g:defx_icons_column_length = 2
 let g:defx_icons_directory_icon = ''

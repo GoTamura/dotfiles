@@ -27,11 +27,11 @@ window:
   # Blank space added around the window in pixels. This padding is scaled
   # by DPI and the specified value is always added at both opposing sides.
   padding:
-    x: 2
-    y: 2
+    x: 0
+    y: 0
 
   # Spread additional padding evenly around the terminal content.
-  dynamic_padding: false
+  dynamic_padding: true
 
   # Window decorations
   #
@@ -42,7 +42,7 @@ window:
   # Values for `decorations` (macOS only):
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background, but no title bar buttons
-  decorations: full
+  decorations: none
 
   # Startup Mode (changes require restart)
   #
@@ -95,7 +95,9 @@ font:
     #   - (macOS) Menlo
     #   - (Linux) monospace
     #   - (Windows) Consolas
-    family: MigMix 1M for Powerline
+    #family: MigMix 1M for Powerline
+    family: MigMix 1M with-icons
+    #family: Source Code Pro
 
     # The `style` can be specified to pick a specific face.
     style: Regular
@@ -106,7 +108,8 @@ font:
     #
     # If the bold family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: MigMix 1M for Powerline
+    family: MigMix 1M with-icons
+    #family: Source Code Pro
 
     # The `style` can be specified to pick a specific face.
     style: Bold
@@ -117,7 +120,7 @@ font:
     #
     # If the italic family is not specified, it will fall back to the
     # value specified for the normal font.
-    family: MigMix 1M for Powerline
+    family: MigMix 1M with-icons
 
     # The `style` can be specified to pick a specific face.
     style: Italic
@@ -354,7 +357,7 @@ mouse:
   triple_click: { threshold: 300 }
 
   # If this is `true`, the cursor is temporarily hidden when typing.
-  hide_when_typing: false
+  hide_when_typing: true
 
   url:
     # URL launcher
