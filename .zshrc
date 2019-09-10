@@ -1,8 +1,9 @@
 export EDITOR=nvim
 
 #KVS PATH
-export KVS_DIR=~/local/kvs_osmesa_gentoo_debug
+#export KVS_DIR=~/local/kvs_osmesa_gentoo_debug
 #export KVS_DIR=~/local/kvs_glut
+export KVS_DIR=~/local/kvs_glut_opencv
 export KVS_OSMESA_GALLIUM_DRIVER=llvmpipe
 #export KVS_OSMESA_DIR=~/gentoo/usr/include
 export path=($path $KVS_DIR/bin )
@@ -51,6 +52,7 @@ alias glog="git log --graph --oneline --all --decorate=full -20 --date=short --f
 #
 #
 autoload -Uz colors
+colors
 setopt AUTO_CD
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 

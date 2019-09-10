@@ -412,3 +412,9 @@ endfunction
 " With this maps you can now toggle the terminal
 nnoremap <silent> <Leader>t :call MonkeyTerminalToggle()<cr>
 tnoremap <C-j> <C-\><C-n>
+
+" C#
+"autocmd BufRead,BufNewFile *.cs setfiletype csharp
+let g:python_host_prog = '/usr/bin/python2'
+
+set thesaurus=~/\.vim/thesaurus/thesaurus\.txt

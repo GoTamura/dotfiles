@@ -44,7 +44,6 @@ endif
 " <C-h>, <BS>: close popup and delete backword char.
 inoremap <expr><C-h> deoplete#smart_close_popup()."\<C-h>"
 inoremap <expr><BS>  deoplete#smart_close_popup()."\<C-h>"
-imap <expr><CR> neosnippet#expandable() ? "\<Plug>(neosnippet_expand_or_jump)" : pumvisible() ? "\<C-y>" : "\<CR>"
 inoremap <expr><TAB>  pumvisible() ? "\<C-n>" : "\<TAB>"
 '''
 hook_post_source = '''
@@ -56,6 +55,7 @@ call deoplete#custom#option({
 \ })
 
 '''
+
 
 #[[plugins]]
 #repo = 'deoplete-plugins/deoplete-tag'
