@@ -220,6 +220,7 @@ if !has('nvim')
 endif
 
 nmap <F11> :Defx<CR>
+autocmd FileType defx set winblend=20
 
 " http://takkii.hatenablog.com/entry/2018/08/19/133847
 autocmd FileType defx call s:defx_my_settings()
@@ -278,7 +279,7 @@ autocmd FileType defx call s:defx_my_settings()
 
 nnoremap <silent><Space>e :call <SID>toggle_defx()<Cr>
 function! s:toggle_defx()
-  Defx -columns=mark:indent:icons:indent:filename:type:size:time -split=floating -winwidth=80 -toggle -resume
+  Defx -columns=mark:indent:filename:type:size:time -split=floating -winwidth=80 -toggle -resume
 endfunction 
 '''
 [[plugins]]
@@ -290,7 +291,6 @@ let g:defx_icons_directory_icon = ''
 let g:defx_icons_mark_icon = '*'
 let g:defx_icons_parent_icon = ''
 let g:defx_icons_default_icon = ''
-let g:defx_icons_directory_symlink_icon = ''
 " Options below are applicable only when using "tree" feature
 let g:defx_icons_root_opened_tree_icon = ''
 let g:defx_icons_nested_opened_tree_icon = ''
@@ -433,3 +433,35 @@ autocmd! BufNewFile,BufRead *.vs,*.fs set ft=glsl
 
 [[plugins]]
 repo = 'qpkorr/vim-bufkill'
+
+[[plugins]]
+repo = 'junegunn/fzf'
+build = './install --all'
+merged = 0
+
+[[plugins]]
+repo = 'junegunn/fzf.vim'
+depends = 'fzf'
+hook_add = '''
+let $FZF_DEFAULT_OPTS='--layout=reverse'
+let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+
+function! FloatingFZF()
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+
+  let height = &lines - 3
+  let width = float2nr(&columns - (&columns * 2 / 10))
+  let col = float2nr((&columns - width) / 2)
+
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': 1,
+        \ 'col': col,
+        \ 'width': width,
+        \ 'height': height
+        \ }
+
+  call nvim_open_win(buf, v:true, opts)
+endfunction
+'''
