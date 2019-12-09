@@ -353,7 +353,7 @@ if !has('nvim')
   call dein#add('roxma/vim-hug-neovim-rpc')
 endif
 
-nmap <F11> :Defx<CR>
+nmap <F10> :Defx<CR>
 autocmd FileType defx set winblend=20
 
 " http://takkii.hatenablog.com/entry/2018/08/19/133847
@@ -411,7 +411,7 @@ autocmd FileType defx call s:defx_my_settings()
     endfunction
 
 
-nnoremap <silent><leader>e :call <SID>toggle_defx()<Cr>
+nnoremap <silent><leader>p :call <SID>toggle_defx()<CR>
 function! s:toggle_defx()
   Defx -columns=mark:indent:filename:type:size:time -split=floating -winwidth=80 -toggle -resume
 endfunction 

@@ -1,4 +1,3 @@
-source ~/dotfiles/vim/plugin.vim
 "--------------------------------------------------------
 " コマンドスニペット
 " :col :cnew // quickfixを新旧に移動する
@@ -9,6 +8,8 @@ source ~/dotfiles/vim/plugin.vim
 command -nargs=1 Lvimg lvim <f-args> `git ls-files`
 let mapleader = "\<Space>"
 nnoremap <Space> <Nop>
+
+source ~/dotfiles/vim/plugin.vim
 
 set showcmd
 set number
