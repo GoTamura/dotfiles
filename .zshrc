@@ -1,8 +1,11 @@
 export EDITOR=nvim
 
+source /etc/profile.d/openfoam-7.sh
+
 #KVS PATH
 #export KVS_DIR=~/local/kvs_osmesa_gentoo_debug
-export KVS_DIR=~/local/kvs_glut
+#export KVS_DIR=~/local/kvs_glut
+export KVS_DIR=~/local/kvs_glut_bef
 #export KVS_DIR=~/local/kvs_glut_opencv
 export KVS_OSMESA_GALLIUM_DRIVER=llvmpipe
 #export KVS_OSMESA_DIR=~/gentoo/usr/include
@@ -167,11 +170,14 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 # 2>/dev/null
 
 # fzf
-export FZF_CTRL_T_COMMAND='rg --files --hidden --follow --glob "!.git/*"'
+source /usr/share/fzf/key-bindings.zsh
+source /usr/share/fzf/completion.zsh
+export FZF_CTRL_T_COMMAND='rg --files --hidden --follow --glob "!.git/*" 2>/dev/null'
 export FZF_CTRL_T_OPTS='--preview "bat  --color=always --style=header,grid --line-range :100 {}"'
+alias fzf='fzf --preview "bat  --color=always --style=header,grid --line-range :100 {}"'
 
 # Use ~~ as the trigger sequence instead of the default **
-export FZF_COMPLETION_TRIGGER='~~'
+#export FZF_COMPLETION_TRIGGER='~~'
 
 # Options to fzf command
 export FZF_COMPLETION_OPTS='+c -x'
@@ -312,4 +318,52 @@ fshow_preview() {
                 --header "enter to view, alt-y to copy hash" \
                 --bind "enter:execute:$_viewGitLogLine   | less -R" \
                 --bind "alt-y:execute:$_gitLogLineToHash | xclip"
+}
+
+## https://www.rasukarusan.com/entry/2018/08/14/083000
+# cdrの設定
+autoload -Uz is-at-least
+if is-at-least 4.3.11
+then
+  autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+  add-zsh-hook chpwd chpwd_recent_dirs
+  zstyle ':chpwd:*'      recent-dirs-max 500
+  zstyle ':chpwd:*'      recent-dirs-default yes
+  zstyle ':completion:*' recent-dirs-insert both
+fi
+
+# fzf-cdr 
+alias cdd='fzf-cdr'
+function fzf-cdr() {
+    target_dir=`cdr -l | sed 's/^[^ ][^ ]*  *//' | fzf`
+    target_dir=`echo ${target_dir/\~/$HOME}`
+    if [ -n "$target_dir" ]; then
+        cd $target_dir
+    fi
+}
+
+# fgを使わずctrl+zで行ったり来たりする
+fancy-ctrl-z () {
+  if [[ $#BUFFER -eq 0 ]]; then
+    BUFFER="fg"
+    zle accept-line
+  else
+    zle push-input
+    zle clear-screen
+  fi
+}
+zle -N fancy-ctrl-z
+bindkey '^Z' fancy-ctrl-z
+
+# fgをfzfで
+alias fgg='_fgg'
+function _fgg() {
+    wc=$(jobs | wc -l | tr -d ' ')
+    if [ $wc -ne 0 ]; then
+        job=$(jobs | awk -F "suspended" "{print $1 $2}"|sed -e "s/\-//g" -e "s/\+//g" -e "s/\[//g" -e "s/\]//g" | grep -v pwd | fzf | awk "{print $1}")
+        wc_grep=$(echo $job | grep -v grep | grep 'suspended')
+        if [ "$wc_grep" != "" ]; then
+            fg %$job
+        fi
+    fi
 }

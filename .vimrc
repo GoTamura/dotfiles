@@ -420,12 +420,3 @@ tnoremap <C-j> <C-\><C-n>
 let g:python_host_prog = '/usr/bin/python2'
 
 set thesaurus=~/\.vim/thesaurus/thesaurus\.txt
-
-"riggrep
-"https://ktrysmt.github.io/blog/finish-work-early-with-cli-made-by-rust/
-if executable("rg")
-    set grepprg=rg\ --vimgrep\ --no-heading
-    set grepformat=%f:%l:%c:%m,%f:%l:%m
-endif
-command! -nargs=* -complete=file Rg :tabnew | :silent grep --sort-files <args>
-command! -nargs=* -complete=file Rgg :tabnew | :silent grep <args>

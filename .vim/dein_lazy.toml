@@ -77,7 +77,7 @@ let s:rust_channel = substitute(system("if rustup show | grep -A 10 active | gre
 let g:LanguageClient_serverCommands = {
     \ 'vue': ['vls'],
     \ 'rust': ['rustup', 'run', s:rust_channel, 'rls'],
-    \ 'python': ['pyls'],
+    \ 'python': ['pyls', '-v'],
     \ 'cpp': ['clangd'],
     \ 'javascript': ['javascript-typescript-stdio'],
     \ 'typescript': ['javascript-typescript-stdio'],
