@@ -2,15 +2,16 @@
 
 dotfile_dir=`pwd`
 echo $dotfile_dir
-cd
+cd $HOME
 mkdir -p .vim/
 mkdir -p .config/nvim
 
-ln -s $dotfile_dir/.vimrc $HOME/.vimrc
-ln -s $dotfile_dir/.vimrc $HOME/.config/nvim/init.vim
-ln -s $dotfile_dir/.vim/dein.toml $HOME/.vim/dein.toml
-ln -s $dotfile_dir/.vim/dein_lazy.toml $HOME/.vim/dein_lazy.toml
-ln -s $dotfile_dir/.vim/settings.json $HOME/.vim/settings.json
+ln -s $dotfile_dir/vim/init.vim $HOME/.vimrc
+ln -s $dotfile_dir/vim/init.vim $HOME/.config/nvim/init.vim
+ln -s $dotfile_dir/vim/dein.toml $HOME/.vim/dein.toml
+ln -s $dotfile_dir/vim/dein_lazy.toml $HOME/.vim/dein_lazy.toml
+ln -s $dotfile_dir/vim/settings.json $HOME/.vim/settings.json
+ln -s $dotfile_dir/vim/coc-setting.vim $HOME/.vim/coc-setting.vim
 
 ln -s $dotfile_dir/zsh/.zshenv $HOME/.zshenv
 ln -s $dotfile_dir/.byobu $HOME/.byobu
