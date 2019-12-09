@@ -1,6 +1,7 @@
 .vim/dein/
 .vim/swap/
 .vim/view/
+zsh/.zcompdump
 .xmonad/log
 .xmonad/xmonad-x86_64-linux
 .xmonad/xmonad.errors

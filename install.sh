@@ -12,7 +12,7 @@ ln -s $dotfile_dir/.vim/dein.toml $HOME/.vim/dein.toml
 ln -s $dotfile_dir/.vim/dein_lazy.toml $HOME/.vim/dein_lazy.toml
 ln -s $dotfile_dir/.vim/settings.json $HOME/.vim/settings.json
 
-ln -s $dotfile_dir/.zshrc $HOME/.zshrc
+ln -s $dotfile_dir/zsh/.zshenv $HOME/.zshenv
 ln -s $dotfile_dir/.byobu $HOME/.byobu
 ln -s $HOME/.byobu/.tmux.conf $HOME/.tmux.conf
 
