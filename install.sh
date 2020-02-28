@@ -17,6 +17,7 @@ ln -s $dotfile_dir/zsh/.zshenv $HOME/.zshenv
 ln -s $dotfile_dir/.byobu $HOME/.byobu
 ln -s $HOME/.byobu/.tmux.conf $HOME/.tmux.conf
 
+git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
 
 cd $dotfile_dir
 

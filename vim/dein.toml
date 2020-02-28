@@ -612,3 +612,12 @@ repo = 'bkad/CamelCaseMotion'
 hook_source = '''
 let g:camelcasemotion_key = '<leader>'
 '''
+
+[[plugins]]
+repo = 'maxmellon/vim-jsx-pretty'
+
+[[plugins]]
+repo = 'yuezk/vim-js'
+
+[[plugins]]
+repo = 'HerringtonDarkholme/yats.vim'

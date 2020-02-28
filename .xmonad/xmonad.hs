@@ -44,6 +44,7 @@ main = do
     {
      normalBorderColor  = myNormalBorderColor
     ,focusedBorderColor = myFocusedBorderColor
+    ,borderWidth        = myBorderWidth
     ,terminal           = myTerminal
     ,workspaces         = myWorkspaces
     ,modMask            = myModMask
@@ -63,6 +64,7 @@ myModMask             = mod4Mask
 myTerminal            = "alacritty -e byobu new"
 myNormalBorderColor   = "#b8bb26"
 myFocusedBorderColor  = "#fb4934"
+myBorderWidth         = 5
 myFont                = "MigMix 1M:size=9:antialias=true"
 myLayout = (smartBorders $ avoidStruts $ maximize $ spacing gapwidth $ gaps [(U, gwU), (D, gwD), (L, gwL), (R, gwR)] $ minimize (tiled ||| tritiled ||| Mirror tiled))
  ||| (noBorders Full) ||| (smartBorders $ avoidStruts $ maximize $ minimize (tiled ||| tritiled ))

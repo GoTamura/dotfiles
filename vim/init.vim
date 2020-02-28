@@ -44,7 +44,23 @@ set clipboard+=unnamedplus
 autocmd VimResized * wincmd =
 set pumblend=20
 autocmd FileType * set winblend=20
-
+"-----------------------------------------------------------
+"
+" http://www.nemotos.net/?p=2019
+"##### auto fcitx  ###########
+let g:input_toggle = 1
+function! Fcitx2en()
+   let s:input_status = system("fcitx-remote")
+   if s:input_status == 2
+      let g:input_toggle = 1
+      let l:a = system("fcitx-remote -c")
+   endif
+endfunction
+ 
+set ttimeoutlen=150
+"Leave Insert mode
+autocmd InsertLeave * call Fcitx2en()
+"##### auto fcitx end ######
 "-----------------------------------------------------------
 
 " http://cimadai.hateblo.jp/entry/20080325/1206459666
