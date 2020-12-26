@@ -1,9 +1,13 @@
 # fzf
-source /usr/share/fzf/key-bindings.zsh
-source /usr/share/fzf/completion.zsh
-export FZF_CTRL_T_COMMAND='rg --files --hidden --follow --glob "!.git/*" 2>/dev/null'
-export FZF_CTRL_T_OPTS='--preview "bat  --color=always --style=header,grid --line-range :100 {}"'
-alias fzf='fzf --preview "bat  --color=always --style=header,grid --line-range :100 {}"'
+#source /usr/share/fzf/key-bindings.zsh
+#source /usr/share/fzf/completion.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+#export FZF_DEFAULT_OPTS='--preview "bat  --color=always --style=header,grid --line-range :100 {}"'
+export FZF_DEFAULT_OPTS=''
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_CTRL_T_OPTS='--preview "bat --theme=gruvbox  --color=always --style=numbers,header --line-range :100 {}"'
+#export FZF_CTRL_T_OPTS='--preview "[[ $(file {}) =~ directory ]] && exa --tree --header --git --icons {} || bat --theme=gruvbox  --color=always --style=numbers,header --line-range :100 {}"'
 
 # Use ~~ as the trigger sequence instead of the default **
 #export FZF_COMPLETION_TRIGGER='~~'
@@ -23,8 +27,7 @@ _fzf_compgen_path() {
 _fzf_compgen_dir() {
   fd --type d --hidden --follow --exclude ".git" . "$1"
 }
-export BAT_THEME="Gruvbox-N"
-export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
+export BAT_THEME="gruvbox"
 
 # Use fd and fzf to get the args to a command.
 # Works only with zsh
@@ -128,7 +131,7 @@ FZF-EOF"
 
 alias glNoGraph='git log --color=always --format="%C(auto)%h%d %s %C(black)%C(bold)%cr% C(auto)%an" "$@"'
 _gitLogLineToHash="echo {} | grep -o '[a-f0-9]\{7\}' | head -1"
-_viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | diff-so-fancy'"
+_viewGitLogLine="$_gitLogLineToHash | xargs -I % sh -c 'git show --color=always % | delt"
 
 # fcoc_preview - checkout git commit with previews
 fcoc_preview() {
@@ -174,7 +177,7 @@ function fzf-cdr() {
 # fgを使わずctrl+zで行ったり来たりする
 fancy-ctrl-z () {
   if [[ $#BUFFER -eq 0 ]]; then
-    BUFFER="fg"
+    BUFFER="\fg"
     zle accept-line
   else
     zle push-input
@@ -185,14 +188,30 @@ zle -N fancy-ctrl-z
 bindkey '^Z' fancy-ctrl-z
 
 # fgをfzfで
-alias fgg='_fgg'
+alias fg='_fgg'
 function _fgg() {
     wc=$(jobs | wc -l | tr -d ' ')
     if [ $wc -ne 0 ]; then
         job=$(jobs | awk -F "suspended" "{print $1 $2}"|sed -e "s/\-//g" -e "s/\+//g" -e "s/\[//g" -e "s/\]//g" | grep -v pwd | fzf | awk "{print $1}")
         wc_grep=$(echo $job | grep -v grep | grep 'suspended')
         if [ "$wc_grep" != "" ]; then
-            fg %$job
+            \fg %$job
         fi
     fi
 }
+
+function check_root() {
+  exa --tree --git-ignore --icons $(fd -p "$1\$" $(ghq root -all))
+}
+
+function ghq-fzf() {
+  #local src=$(ghq list | fzf --preview 'exa --tree -L 2 --git-ignore --icons $(fd -p {}\$ $(ghq root -all))') 
+  local src=$(ghq list | fzf --preview 'exa --tree -L 2 --git-ignore --icons $(find $(ghq root -all) -path $(sed '\''s/'\/'/'\\''\/'/g'\'' <<< \"\*{}\")') 
+  if [ -n "$src" ]; then
+    BUFFER="cd $(fd -p $src\$ $(ghq root -all))"
+    zle accept-line
+  fi
+  zle -R -c
+}
+zle -N ghq-fzf
+bindkey '^G' ghq-fzf

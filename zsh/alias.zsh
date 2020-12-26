@@ -21,6 +21,10 @@ alias dirs="dirs -v"
 alias nvf="nvr --remote-send \"<C-\\><C-n>:vs $1<CR>\""
 function nvcd () { realpath $1 | xargs -I{} nvr -c "cd {} "}
 
-alias glog="git log --graph --oneline --all --decorate=full -20 --date=short --format=\"%C(yellow)%h%C(reset) %C(magenta)[%ad]%C(reset)%C(auto)%d%C(reset) %s %C(cyan)@%an%C(reset)\" "
+alias gl="git log --graph --oneline --all --decorate=full -20 --date=short --format=\"%C(yellow)%h%C(reset) %C(magenta)[%ad]%C(reset)%C(auto)%d%C(reset) %s %C(cyan)@%an%C(reset)\" "
 
 alias md2pdf='(){pandoc $1 -o $1{##*/%.*}.pdf -V documentclass=ltjarticle --pdf-engine=lualatex'
+
+alias c="code -r"
+
+alias open='powershell.exe /c start'
