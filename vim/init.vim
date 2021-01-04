@@ -5,56 +5,11 @@
 " :vim {pattern} `git ls-files` // git で管理されてる範囲内でgrep
 " <Space> E // defxウィンドウをトグる
 "
+command -nargs=1 Lvimg lvim <f-args> `git ls-files`
 let mapleader = "\<Space>"
 nnoremap <Space> <Nop>
-"--------------------------------------------------------
-" dein.vim関係
-" http://d.hatena.ne.jp/raiden325/20160716/1468641998 参考
 
-" プラグインがインストールされるディレクトリ
-let s:dein_dir = expand('~/.cache/dein')
-" dein.vim本体
-let s:dein_repo_dir = s:dein_dir . '/repos/github.com/Shougo/dein.vim'
-
-" dein.vim がなければ github から落とす
-if &runtimepath !~# '/dein.vim'
-  if !isdirectory(s:dein_repo_dir)
-    execute '!curl https://raw.githubusercontent.com/Shougo/dein.vim/master/bin/installer.sh > installer.sh'
-    execute '!sh ./installer.sh ' . s:dein_dir 
-    execute '!rm ./installer.sh'
-  endif
-  execute 'set runtimepath+=' . fnamemodify(s:dein_repo_dir, ':p')
-endif
-
-" 設定開始
-if dein#load_state(s:dein_dir)
-  call dein#begin(s:dein_dir)
-
-  " プラグインリストを収めた TOML ファイル
-  " ~/.vim/dein.toml,deinlazy.tomlを用意する
-  let g:rc_dir    = expand('~/.vim')
-  let s:toml      = g:rc_dir . '/dein.toml'
-  let s:lazy_toml = g:rc_dir . '/dein_lazy.toml'
-
-  " TOML を読み込み、キャッシュしておく
-  call dein#load_toml(s:toml,      {'lazy': 0})
-  call dein#load_toml(s:lazy_toml, {'lazy': 1})
-
-  " 設定終了
-  call dein#end()
-  call dein#save_state()
-endif
-
-" もし、未インストールものものがあったらインストール
-if dein#check_install()
-  call dein#install()
-endif
-
-filetype plugin on
-filetype plugin indent on
-" :call dein#update() でプラグインのアップデート
-
-"-----------------------------------------------------------
+source ~/dotfiles/vim/plugin.vim
 
 set showcmd
 set number
@@ -71,7 +26,11 @@ set shiftwidth=2
 set hlsearch
 set autoindent
 set laststatus=2
-set t_Co=256
+if exists('+termguicolors')
+  let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+  let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+  set termguicolors
+endif
 set shortmess+=I
 set ignorecase
 set smartcase
@@ -80,7 +39,28 @@ set showmatch
 set wildmenu
 set formatoptions+=mM
 set hidden
-
+set mouse=a
+set clipboard+=unnamedplus
+autocmd VimResized * wincmd =
+set pumblend=20
+autocmd FileType * set winblend=20
+"-----------------------------------------------------------
+"
+" http://www.nemotos.net/?p=2019
+"##### auto fcitx  ###########
+let g:input_toggle = 1
+function! Fcitx2en()
+   let s:input_status = system("fcitx-remote")
+   if s:input_status == 2
+      let g:input_toggle = 1
+      let l:a = system("fcitx-remote -c")
+   endif
+endfunction
+ 
+set ttimeoutlen=150
+"Leave Insert mode
+autocmd InsertLeave * call Fcitx2en()
+"##### auto fcitx end ######
 "-----------------------------------------------------------
 
 " http://cimadai.hateblo.jp/entry/20080325/1206459666
@@ -139,15 +119,6 @@ function! s:insert_include_guard()
 endfunction
 command! -nargs=0 InsertIncludeGuard call s:insert_include_guard()
 
-"-----------------------------------------------------------------
-"http://adragoona.hatenablog.com/entry/2015/07/21/164138
-" next-alter
-"---------------------------------------------------------
-"Prefix
-nmap <Leader>ano <Plug>(next-alter-open)
-nnoremap <expr> <Leader>anb next_alter#open_mapexpr('vertical botright')
-nnoremap <expr> <Leader>ant next_alter#open_mapexpr('vertical topleft')
-
 " key is file extension, value is alternate file extension.
 let g:next_alter#pair_extension = { 
             \ 'c'   : [ 'h' ],
@@ -178,7 +149,7 @@ let g:termdebug_wide = 163
 
 "------------------------------------------------------------
 " quickfix
-au QuickFixCmdPost *grep* cwindow
+"au QuickFixCmdPost *grep* cwindow
 "------------------------------------------------------------
 " vimgrep
 "vim {pattern} `git ls-files`
@@ -247,6 +218,26 @@ endfunction
 autocmd FileType tidal map <F5> :TidalRun<CR>
 augroup END
 
+" Rust
+augroup Rust
+autocmd FileType rust map <F5> :Cargo run<CR>
+augroup END
+
+" TypeScript
+augroup TypeScript
+autocmd BufRead,BufNewFile *.ts set filetype=typescript
+autocmd FileType typescript command! TypeScriptRun call s:TypeScriptRun()
+function! s:TypeScriptRun()
+  !npx ts-node ./src/index.ts
+endfunction
+autocmd FileType typescript map <F5> :TypeScriptRun<CR>
+augroup END
+
+" Vue.js
+augroup Vue
+autocmd BufRead,BufNewFile *.vue set filetype=vue
+augroup END
+
 " Undo
 if has('persistent_undo')
   set undodir=~/.vim/undo
@@ -312,7 +303,7 @@ function! ToggleWindowSize()
     let s:toggle_window_size = 1
   endif
 endfunction
-nnoremap <C-w><C-m> :call ToggleWindowSize()<CR>
+nnoremap <F11> :call ToggleWindowSize()<CR>
 
 "--------------------------------------------------------
 " ColorSchemeの背景を透過させる
@@ -391,4 +382,11 @@ function! MonkeyTerminalExec(cmd)
 endfunction
 
 " With this maps you can now toggle the terminal
-nnoremap <Leader>t :call MonkeyTerminalToggle()<cr>
+nnoremap <silent> <Leader>t :call MonkeyTerminalToggle()<cr>
+tnoremap <C-j> <C-\><C-n>
+
+" C#
+"autocmd BufRead,BufNewFile *.cs setfiletype csharp
+let g:python_host_prog = '/usr/bin/python2'
+
+set thesaurus=~/\.vim/thesaurus/thesaurus\.txt

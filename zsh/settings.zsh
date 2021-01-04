@@ -1,8 +1,3 @@
-export path=($path ~/.cargo/bin)
-export RUST_SRC_PATH="$(rustc --print sysroot)/lib/rustlib/src/rust/src"
-export EDITOR="/usr/bin/vim"
-export LANG
-
 #コマンド実行時の時間をプロンプトに表示する
 re-prompt() {
   zle .reset-prompt
@@ -15,26 +10,10 @@ zle -N accept-line re-prompt
 #PATH="$(ruby -e 'print Gem.user_dir')/bin:$PATH"
 #export GEM_HOME=$(ruby -e 'print Gem.user_dir')
 eval "$(rbenv init -)"
-MAC_Appricot="44:8A:5B:9E:E0:B0"
-alias ls="ls -F --color=auto"
-alias ipa="ip a"
-alias mkdir="mkdir -p"
-alias v="nvim"
-alias vz="vim ~/.zshrc"
-alias vv="vim ~/.vimrc"
-alias vd="vim ~/.vim/dein.toml"
-alias sz="source ~/.zshrc"
-alias em="emacs -nw"
-alias fehbg="feh --bg-scale"
-alias glc="gcc -lglut -lGL -lGLU -lm -lglfw -lglm"
-alias gl+="g++ -lglut -lGL -lGLU -lm -lglfw -lGLEW";
-alias gdb="gdb -q"
-alias pndjp="pandoc -V documentclass=ltjarticle --latex-engine=lualatex"
-alias vis="nvim -S ./Session.vim"
-
 #
 #
 autoload -Uz colors
+colors
 setopt AUTO_CD
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
@@ -95,10 +74,36 @@ autoload -Uz vcs_info
 setopt prompt_subst
 zstyle ':vcs_info:*' formats '[%F{green}%b%f]'
 zstyle ':vcs_info:*' actionformats '[%F{green}%b%f(%F{red}%a%f)]'
-precmd() { vcs_info }
-PROMPT='[%n@%m]${vcs_info_msg_0_} %{${fg[yellow]}%}%~%{${reset_color}%} [%*]
+
+function is_gentoo() { 
+  if echo $SHELL | grep gentoo >/dev/null ; then
+    shellroot="${fg[yellow]}gentoo${reset_color}";
+  else 
+    shellroot="arch"; 
+  fi
+}
+
+precmd() { 
+  vcs_info;
+  is_gentoo;
+}
+
+function memo() {
+  if [ $# -eq 0 ]; then
+    unset memotxt
+    return
+  fi
+  local str
+  for str in ${1+"$@"}
+  do
+    memotxt="${memotxt} ${str}"
+  done
+}
+
+
+PROMPT='[%n@%m:${shellroot}]${vcs_info_msg_0_} %{${fg[yellow]}%}%~%{${reset_color}%} [%*]
 %(?.%B%F{green}.%B%F{blue})%\>%f%b'
-RPROMPT=''
+RPROMPT='${memotxt}'
 
 show_buffer_stack() {
   POSTDISPLAY="
@@ -109,9 +114,5 @@ zle -N show_buffer_stack
 setopt noflowcontrol
 bindkey '^Q' show_buffer_stack  
 
-alias md2pdf='(){pandoc $1 -o $1{##*/%.*}.pdf -V documentclass=ltjarticle --pdf-engine=lualatex'
 
-# Vivado など Java系の表示を正しくする
-export _JAVA_AWT_WM_NONREPARENTING=1
-# Vivado のセットアップコマンド
-# sudo sh -c "export _JAVA_AWT_WM_NONREPARENTING=1 && ./xsetup"
+

@@ -1,0 +1,211 @@
+#-----------------------------------------------------------
+
+##markdown
+#[[plugins]]
+#repo = 'plasticboy/vim-markdown'
+#on_ft = 'md'
+#
+#[[plugins]]
+#repo = 'kannokanno/previm'
+#on_ft = 'md'
+#
+#[[plugins]]
+#repo = 'tyru/open-browser.vim'
+#on_ft = 'md'
+#
+#[[plugins]]
+#repo = 'miyakogi/livemark.vim'
+#on_ft = 'md'
+
+#------------------------------------------------------------
+# CSS HTML
+[[plugins]]
+repo = 'hail2u/vim-css3-syntax'
+on_ft = 'css'
+
+#[[plugins]]
+#repo = 'mattn/emmet-vim'
+#on_ft = '[html, vue]'
+
+#------------------------------------------------------------
+# Cpp
+
+#------------------------------------------------------------
+# Vue
+[[plugins]]
+repo = 'posva/vim-vue'
+on_ft = 'vue'
+[[plugins]]
+repo = 'prettier/vim-prettier'
+on_ft = '[vue, javascript, typescript, css, yaml]'
+
+#------------------------------------------------------------
+# Rust
+[[plugins]]
+repo = 'rust-lang/rust.vim'
+on_ft = 'rust'
+hook_source = '''
+let g:rustfmt_autosave = 1
+'''
+
+[[plugins]]
+repo = 'tbodt/deoplete-tabnine'
+depends = 'deoplete.nvim'
+on_ft = ['rust']
+build = './install.sh'
+hook_source = '''
+call deoplete#custom#source('tabnine', 'rank', 500)
+'''
+
+#------------------------------------------------------------
+# TypeScript
+[[plugins]]
+repo = 'leafgarland/typescript-vim'
+on_ft = 'typescript'
+hook_source = '''
+'''
+
+[[plugins]]
+repo = 'autozimu/LanguageClient-neovim'
+depends = 'deoplete.nvim'
+on_ft = ['rust', 'vue', 'python', 'cpp', 'javascript', 'typescript', 'fortran', 'haskell']
+build = './install.sh'
+hook_source = '''
+set hidden
+set signcolumn=yes
+let s:rust_channel = substitute(system("if rustup show | grep -A 10 active | grep stable >/dev/null ; then echo \"stable\"; else echo \"nightly\"; fi"), '\n\+$', '', '')
+let g:LanguageClient_serverCommands = {
+    \ 'vue': ['vls'],
+    \ 'rust': ['rustup', 'run', s:rust_channel, 'rls'],
+    \ 'python': ['pyls', '-v'],
+    \ 'cpp': ['clangd'],
+    \ 'javascript': ['javascript-typescript-stdio'],
+    \ 'typescript': ['javascript-typescript-stdio'],
+    \ 'haskell': ['hie-wrapper'],
+    \ 'fortran': ['fortls'],
+    \ }
+let g:LanguageClient_autoStart = 1
+let g:LanguageClient_loggingFile = expand('~/.vim/LanguageClient.log')
+let g:LanguageClient_settingsPath = expand('~/.vim/settings.json')
+let g:LanguageClient_rootMarkers = {
+    \ 'javascript': ['project.json'],
+    \ 'rust': ['Cargo.toml'],
+    \ 'haskell': ['*.cabal', 'stack.yaml'],
+    \ }
+let g:LanguageClient_diagnosticsList = "Location"
+function LC_maps()
+  if has_key(g:LanguageClient_serverCommands, &filetype)
+    nnoremap <buffer> <silent> K :call LanguageClient#textDocument_hover()<CR>
+    nnoremap <buffer> <silent> gd :call LanguageClient#textDocument_definition()<CR>
+    nnoremap <buffer> <silent> gm :call LanguageClient#textDocument_implementation()<CR>
+    nnoremap <buffer> <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+    nnoremap <buffer> <silent> <Leader>lf :call LanguageClient#textDocument_formatting()<CR>
+    nnoremap <buffer> <silent> <Leader>lb :call LanguageClient#textDocument_references()<CR>
+    nnoremap <buffer> <silent> <Leader>la :call LanguageClient#textDocument_codeAction()<CR>
+    nnoremap <buffer> <silent> <Leader>ls :call LanguageClient#textDocument_documentSymbol()<CR>
+  endif
+endfunction
+
+autocmd FileType * call LC_maps()
+let g:LanguageClient_diagnosticsDisplay = {
+     \        1: {
+     \            "name": "Error",
+     \            "texthl": "ALEError",
+     \            "signText": "✖",
+     \            "signTexthl": "ALEErrorSign",
+     \            "virtualTexthl": "ALEErrorSign",
+     \        },
+     \        2: {
+     \            "name": "Warning",
+     \            "texthl": "ALEWarning",
+     \            "signText": "⚠",
+     \            "signTexthl": "ALEWarningSign",
+     \            "virtualTexthl": "Todo",
+     \        },
+     \        3: {
+     \            "name": "Information",
+     \            "texthl": "ALEInfo",
+     \            "signText": "ℹ",
+     \            "signTexthl": "ALEInfoSign",
+     \            "virtualTexthl": "Todo",
+     \        },
+     \        4: {
+     \            "name": "Hint",
+     \            "texthl": "ALEInfo",
+     \            "signText": "➤",
+     \            "signTexthl": "ALEInfoSign",
+     \            "virtualTexthl": "Todo",
+     \        },
+     \     }
+set completefunc=LanguageClient#complete
+set formatexpr=LanguageClient#textDocument_rangeFormatting_sync()
+'''
+
+### LSP非対応言語はこっちのLinterをつかう
+#[[plugins]]
+#repo = 'w0rp/ale'
+#on_ft = 'fortran'
+#hook_source = '''
+#let g:ale_lint_on_text_changed = 'never'
+#let g:ale_lint_on_insert_leave = 1
+#let g:ale_sign_column_always = 1
+#'''
+
+# Unity
+[[plugins]]
+repo = 'OmniSharp/omnisharp-vim'
+on_ft = 'cs'
+hook_add = '''
+let g:OmniSharp_server_stdio = 1
+" Update semantic highlighting on BufEnter and InsertLeave
+let g:OmniSharp_highlight_types = 2
+
+augroup omnisharp_commands
+    autocmd!
+
+    " Show type information automatically when the cursor stops moving
+    autocmd CursorHold *.cs call OmniSharp#TypeLookupWithoutDocumentation()
+
+    " The following commands are contextual, based on the cursor position.
+    autocmd FileType cs nnoremap <buffer> gd :OmniSharpGotoDefinition<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>fi :OmniSharpFindImplementations<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>fs :OmniSharpFindSymbol<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>fu :OmniSharpFindUsages<CR>
+
+    " Finds members in the current buffer
+    autocmd FileType cs nnoremap <buffer> <Leader>fm :OmniSharpFindMembers<CR>
+
+    autocmd FileType cs nnoremap <buffer> <Leader>fx :OmniSharpFixUsings<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>tt :OmniSharpTypeLookup<CR>
+    autocmd FileType cs nnoremap <buffer> <Leader>dc :OmniSharpDocumentation<CR>
+    autocmd FileType cs nnoremap <buffer> <C-\> :OmniSharpSignatureHelp<CR>
+    autocmd FileType cs inoremap <buffer> <C-\> <C-o>:OmniSharpSignatureHelp<CR>
+
+    " Navigate up and down by method/property/field
+    autocmd FileType cs nnoremap <buffer> <C-k> :OmniSharpNavigateUp<CR>
+    autocmd FileType cs nnoremap <buffer> <C-j> :OmniSharpNavigateDown<CR>
+
+    " Find all code errors/warnings for the current solution and populate the quickfix window
+    autocmd FileType cs nnoremap <buffer> <Leader>cc :OmniSharpGlobalCodeCheck<CR>
+augroup END
+
+" Contextual code actions (uses fzf, CtrlP or unite.vim when available)
+nnoremap <Leader><Space> :OmniSharpGetCodeActions<CR>
+" Run code actions with text selected in visual mode to extract method
+xnoremap <Leader><Space> :call OmniSharp#GetCodeActions('visual')<CR>
+
+" Rename with dialog
+nnoremap <Leader>nm :OmniSharpRename<CR>
+nnoremap <F2> :OmniSharpRename<CR>
+" Rename without dialog - with cursor on the symbol to rename: `:Rename newname`
+command! -nargs=1 Rename :call OmniSharp#RenameTo("<args>")
+
+nnoremap <Leader>cf :OmniSharpCodeFormat<CR>
+
+" Start the omnisharp server for the current solution
+nnoremap <Leader>ss :OmniSharpStartServer<CR>
+nnoremap <Leader>sp :OmniSharpStopServer<CR>
+
+" Enable snippet completion
+let g:OmniSharp_want_snippet=1
+'''
